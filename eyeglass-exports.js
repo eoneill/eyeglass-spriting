@@ -217,14 +217,20 @@ module.exports = function(eyeglass, sass) {
       },
 
       // "module-a/icons/home.png" -> returns "home"
-      // TODO: raise an error if called for an image that has no specified identifer or
-      // the base filename is not a legal css identifier
       "sprite-identifier($spritemap, $spritename)": function(spritemap, spritename, done) {
         var assets = sassUtils.castToJs(spritemap).coerce.get("assets");
         var sprite = assets.coerce.get(spritename);
-        var identifier = sprite.coerce.get("identifier");
+        if (!sprite) {
+          throw new Error(
+            "Spritemap does not contain an sprite named " +
+            sassUtils.castToJs(spritename)
+          );
+          done();
+        } else {
+          var identifier = sprite.coerce.get("identifier");
 
-        done(sassUtils.castToSass(identifier));
+          done(sassUtils.castToSass(identifier));
+        }
       }
 
     }

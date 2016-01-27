@@ -480,4 +480,31 @@ describe("spriting module", function () {
       }
     }, expected, done);
   });
+
+  it("should CSS.escape() identifier names", function (done) {
+    var input = [
+      "@import 'assets'; @import 'spriting'; " +
+      "$sprite-map: sprite-map('test-sprite-map', sprite-layout(horizontal, " +
+      "(spacing: 5px, alignment: bottom)), 'css-escape/*');" +
+      "/* #{sprite-identifier($sprite-map, 'css-escape/img.01.png')} */" +
+      "/* #{sprite-identifier($sprite-map, 'css-escape/img#02.png')} */" +
+      "/* #{sprite-identifier($sprite-map, 'css-escape/img 03.png')} */"
+    ].join("");
+    var expected = "/* img\\.01 */\n/* img\\#02 */\n/* img\\ 03 */\n";
+
+    var rootDir = fixtureDirectory("app_assets");
+
+    testutils.assertCompiles({
+      data: input,
+      eyeglass: {
+        root: rootDir,
+        assets: {
+          sources: [{directory: rootDir, pattern: "css-escape/**/*"}]
+        },
+        engines: {
+          sass: sass
+        }
+      }
+    }, expected, done);
+  });
 });

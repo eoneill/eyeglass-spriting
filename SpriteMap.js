@@ -8,13 +8,14 @@
 var fs = require("fs");
 var path = require("path");
 var lwip = require("lwip");
+var cssEscape = require("css.escape");
 
 var getLastModifiedDate = function(filename) {
   return fs.statSync(filename).mtime.getTime();
 };
 
 var getIdentifier = function(filename) {
-  return path.basename(filename, path.extname(filename));
+  return cssEscape(path.basename(filename, path.extname(filename)));
 };
 
 module.exports = function(sass) {
